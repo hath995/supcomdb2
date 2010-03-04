@@ -1,0 +1,23 @@
+
+.blue {color: rgb(0, 0, 204);}
+.green {color: rgb(0, 187, 0);}
+.red {color: rgb(238, 0, 0);}
+
+.aeon {background-color: rgb(189, 235, 173); font-family: monospace; vertical-align: top; font-size: 12px;}
+.cybran {background-color: rgb(255, 122, 122); font-family: monospace; vertical-align: top; font-size: 12px;} 
+.uef {background-color: rgb(107, 221, 255); font-family: monospace; vertical-align: top; font-size: 12px;}
+.seraphim {background-color: rgb(255, 215, 125); font-family: monospace; vertical-align: top; font-size: 12px;}
+
+.aeon_header {background-color: rgb(189, 235, 173); padding-top: 5px; text-align: center; font-family: monospace; font-size: 16px; font-weight: 900;}
+.cybran_header {background-color: rgb(255, 122, 122); padding-top: 5px; text-align: center; font-family: monospace; font-size: 16px; font-weight: 900;}
+.uef_header {background-color: rgb(107, 221, 255); padding-top: 5px; text-align: center; font-family: monospace; font-size: 16px; font-weight: 900;}
+.seraphim_header {background-color: rgb(255, 215, 125); padding-top: 5px; text-align: center; font-family: monospace; font-size: 16px; font-weight: 900;}
+
+.black_table {background-color: rgb(0, 0, 0); color: rgb(255, 255, 255); text-align: center; font-family: monospace; font-size: 16px; font-weight: 900;}
+
+.unit_pic_div {position: relative; top: 0px; left: 0px; float: left; width: 64px; height: 64px;}
+.unit_pic {position: absolute; top: 0px; left: 0px;}
+.bigfont {font-size: xx-large;}
+
+
+td div:hover {background-color: #DDDDDD}
