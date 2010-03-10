@@ -9,9 +9,9 @@ def ct(title,array_string, version, qua,count=1):
 		page_s = title+"<span class='blue'>"+str(array_string)
 		dist = float(array_string)*19.5
 		if dist > 1000:
-			page_s += " ("+str(dist/1000)+"km)"
+			page_s += " (%(val).1fkm)"%{'val':float(dist/1000)}
 		else:
-			page_s += " ("+str(dist)+"m)"
+			page_s += " (%(val).1fm)"%{'val':float(dist)}
 		page_s += "</span>"
 		return page_s
 	# 1 unit = 19.55m
@@ -27,7 +27,7 @@ def ct(title,array_string, version, qua,count=1):
 	elif version == 5:
 		return title+"<span class='green'>+"+str(array_string)+qua+"</span>"
 	elif version ==  6:
-		return title+"<span class='red'>-"+str(array_string)+qua+"</span>"
+		return title+"<span class='red'>-%(val).1f%(qua)s</span>"%{'val':float(array_string),'qua':qua}
 	#colors text the easy way
 	#case 0 generic color (blue)
 	#case 1 value / value quantifier (blue)
@@ -76,7 +76,7 @@ def unit_details(bp,filepath, categs):
 				bp[zunit]['Buildables'] = buildables
 			else:
 				print zunit
-	print(builtby)
+	#print(builtby)
 		
 					
 	for unit in bp.keys():
@@ -86,7 +86,7 @@ def unit_details(bp,filepath, categs):
 		pagetempl.close()
 		c_unit = bp[unit]
 		#live location
-		imgsrc = '../Strategic icons/'
+		#imgsrc = '../Strategic icons/'
 		#dev location
 		imgsrc = '../../../Strategic icons/'
 		#header
@@ -207,6 +207,10 @@ def unit_details(bp,filepath, categs):
 				page_s += ", "+ct("sonar radius: ",c_unit['Intel']['SonarRadius'],2,"")
 			if 'WaterVisionRadius' in c_unit['Intel']:
 				page_s += ", "+ct("water vision radius: ",c_unit['Intel']['WaterVisionRadius'],2,"")
+			if 'RadarStealthFieldRadius' in c_unit['Intel']:
+				page_s += ", "+ct("radar stealth field radius: ",c_unit['Intel']['RadarStealthFieldRadius'],2,"")
+			if 'SonarStealthFieldRadius' in c_unit['Intel']:
+				page_s += ", "+ct("sonar stealth field radius: ",c_unit['Intel']['SonarStealthFieldRadius'],2,"")
 			page_s += ediv()
 			
 			"""
@@ -214,6 +218,8 @@ def unit_details(bp,filepath, categs):
 			VisionRadius = 26,
 			WaterVisionRadius = 26,
 			RadarRadius
+			RadarStealthFieldRadius = 40,
+			SonarStealthFieldRadius = 40,
 			"""
 			
 		if 'Physics' in c_unit:
@@ -300,6 +306,39 @@ def unit_details(bp,filepath, categs):
 		if 'Weapon' in c_unit:
 			page_s += cdiv()
 			page_s += "<b>Weapons: </b>"
+			for weap in c_unit['Weapon']:
+				page_s += "<div class='indent'>"
+				page_s +="<b>"+ ct("",weap['DisplayName'][1:-1],0,"")+"</b><span style='font-size:small;'>"
+				page_s +=" ("+ct("",weap['WeaponCategory'][1:-1],0,"")+", "+ct("",weap['DamageType'][1:-1],0,"")+"):"
+				
+				if 'Damage' in weap:
+					if weap['WeaponCategory'] == "'Direct Fire'":
+						page_s += ct(" ",float(weap['Damage'])/(1/float(weap['RateOfFire'])),0,"") +" dps"
+						
+						if 'MaxRadius' in weap:
+							minradius = 0;
+							if 'MinRadius' in weap:
+								minradius = weap['MinRadius']
+								page_s += ", "+ct("range: ",minradius,2,"") + " - "+ct("range: ",weap['MaxRadius'],2,"")
+						if 'DamageRadius' in weap:
+							page_s += ", "+ct("area damage radius: ",weap['DamageRadius'],2,"")
+						page_s += "<div class='indent'>"
+						page_s += "<b>"+ct("","Projectile: ",0,"")+"</b>"+ct("",weap['Damage'],0," damage")
+						page_s += ediv()
+				#if 'Damage' in weap and 'RateOfFire' not in weap:
+				#	print(unit)
+				if weap['WeaponCategory'] == "'Death'":
+					if 'Damage' in weap:
+						if weap['Damage'] != '0':
+							page_s += ct("<b> ",weap['Damage'],0,"</b>") + " damage"
+							page_s += ct(", area damage radius:",weap['DamageRadius'],2,"")
+				
+				if 'TurretPitch' in weap:
+					page_s += "<div class='indent'>"
+					page_s += ct("turret pitch: ",weap['TurretPitch'],0,"&deg;") +" &plusmn;"+ct("",weap['TurretPitchRange'],0,"&deg;")+ ct(" (",weap['TurretPitchSpeed'],0,"&deg;/s")+"), " + ct("turret yaw: ",weap['TurretYaw'],0,"&deg;")+ct("&plusmn;",weap['TurretYawRange'],0,"&deg;")+ " ("+ct("",weap['TurretYawSpeed'],0,"&deg;/s")+")"
+					page_s += ediv()
+				page_s += "</span>"
+				page_s += ediv()
 			"""
 			WeaponCategory = 'Direct Fire',
 			
@@ -333,13 +372,14 @@ def unit_details(bp,filepath, categs):
 			TurretYaw = 0,
 			TurretYawRange = 180,
 			TurretYawSpeed = 90,
-
+			shield gun is special!!!## absolver unit
 
 			"""
 			page_s += ediv()
 			
 		if 'Enhancements' in c_unit:
 			page_s += cdiv()
+			page_s += "<b>Enhancements: </b>"
 			enhance = c_unit['Enhancements']
 			for upgrade in enhance.keys():
 				if upgrade != "Slots":
